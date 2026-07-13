@@ -22,6 +22,19 @@ local createPuzzle        = puzzle_generator.createPuzzle
 
 local DEFAULT_DIFFICULTY = "medium"
 
+-- Cell-list form of the two main diagonals, passed to the shared generator so
+-- that generated solutions actually satisfy the X-sudoku "no duplicate along
+-- either diagonal" rule (the generator only enforces row/col/box on its own).
+local function buildDiagonalExtraRegions(n)
+    local diag1, diag2 = {}, {}
+    for r = 1, n do
+        diag1[#diag1 + 1] = { r = r, c = r }
+        diag2[#diag2 + 1] = { r = r, c = n + 1 - r }
+    end
+    return { diag1, diag2 }
+end
+local DIAGONAL_EXTRA_REGIONS = buildDiagonalExtraRegions(9)
+
 local SudokuXBoard = setmetatable({}, { __index = BaseBoard })
 SudokuXBoard.__index = SudokuXBoard
 
@@ -131,8 +144,8 @@ end
 function SudokuXBoard:generate(difficulty)
     self.difficulty = difficulty or self.difficulty or DEFAULT_DIFFICULTY
     local n, box_rows, box_cols = self.n, self.box_rows, self.box_cols
-    local solution = generateSolvedBoard(n, box_rows, box_cols)
-    local puzzle   = createPuzzle(solution, self.difficulty, n, box_rows, box_cols)
+    local solution = generateSolvedBoard(n, box_rows, box_cols, DIAGONAL_EXTRA_REGIONS)
+    local puzzle   = createPuzzle(solution, self.difficulty, n, box_rows, box_cols, DIAGONAL_EXTRA_REGIONS)
     self.puzzle          = puzzle
     self.solution        = solution
     self.user            = emptyGrid(n)
