@@ -3,5 +3,5 @@ return {
     name        = "sudokux",
     fullname    = _("Sudoku X"),
     description = _("Sudoku with diagonal constraints"),
-    version     = "1.2.0",
+    version     = "1.2.1",
 }
