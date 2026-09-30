@@ -141,6 +141,13 @@ function SudokuXBoard:load(state)
     return true
 end
 
+-- Hints must reason with the same constraints the generator used, otherwise
+-- they would miss every deduction that depends on this variant's extra units
+-- (and could even point at a cell the classic rules leave ambiguous).
+function SudokuXBoard:getExtraRegions()
+    return DIAGONAL_EXTRA_REGIONS
+end
+
 function SudokuXBoard:generate(difficulty, randInt, on_progress)
     self.difficulty = difficulty or self.difficulty or DEFAULT_DIFFICULTY
     local n, box_rows, box_cols = self.n, self.box_rows, self.box_cols
